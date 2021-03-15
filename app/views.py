@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from app import app
-from app.forms import ContactForm
+from app.forms import ContactForm, RegistrationForm, LoginForm
 import json
 
 
@@ -17,14 +17,24 @@ def about():
     return render_template('about.html', title='Про сторінку')
 
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-    return render_template('about.html', title='Про сторінку')
+    form = LoginForm()
+    if form.validate_on_submit():#якщо реєстрація пройшла успішно
+        # flash(f'Account created for {form.username.data}!', 'success')
+        #переходимо на домашню сторінку
+        return redirect(url_for('home'))
+    return render_template('login.html', form=form)
 
 
-@app.route("/register")
+@app.route("/register", methods=['GET', 'POST'])
 def register():
-    return render_template('about.html', title='Про сторінку')
+    form = RegistrationForm()
+    if form.validate_on_submit():#якщо реєстрація пройшла успішно
+        # flash(f'Account created for {form.username.data}!', 'success')
+        #переходимо на домашню сторінку
+        return redirect(url_for('home'))
+    return render_template('register.html', form=form)
 
 
 
