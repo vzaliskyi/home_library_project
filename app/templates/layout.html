@@ -43,8 +43,14 @@
               </div>
 
             <div class="navbar-nav">
-              <a class="nav-item nav-link rounded" href="{{ url_for('login') }}">Увійти</a>
-              <a class="nav-item nav-link rounded" href="{{ url_for('register') }}">Зареєструватись</a>
+              {% if current_user.is_authenticated %}
+                <div class="nav-item nav-link rounded">{{ current_user.user_login }}</div>
+                <a class="nav-item nav-link rounded" href="{{ url_for('logout') }}">Вийти</a>
+              {% else %}
+                <a class="nav-item nav-link rounded" href="{{ url_for('login') }}">Увійти</a>
+                <a class="nav-item nav-link rounded" href="{{ url_for('register') }}">Зареєструватись</a>
+              {% endif %}
+              
             </div>
 
         </div>
@@ -53,11 +59,11 @@
 
     <main class="container">
         <div class="card border-5 fs-5">
-            {% block content %}{% endblock %}
+            {% block content %}
+            {% endblock %}
         </div>
-
     </main>
-
+  {% block login %}{% endblock %}
     <footer class="bg-success bg-gradient fixed-bottom">
         {% block footer %}
         {% endblock %}

@@ -1,36 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiBro</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="static/css/custom.css">
-    <style>
-        .forms{
-            width: 350px;
-            margin: auto;
-            /*text-align: center;*/
-        }
-
-        .field{
-            margin-bottom: 10px;
-        }
-
-        .text_info{
-            text-align: center;
-        }
-
-        .submit_button{
-            text-align: center;
-            margin-top: 15px;
-        }
-    </style>
-
-</head>
-<body>
-    <div class="forms">
+{% extends "layout.html" %}
+{% block content %}
+     <div class="forms">
         <form method="POST" action="" >
             {{ form.hidden_tag() }}
             <legend class="border-bottom mb-4">Реєстрація</legend>
@@ -46,19 +16,6 @@
                 </div>
                 {% else %}
                 {{ form.username(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-            <div class="form-group field">
-                {{ form.email.label(class="form-control-label") }}
-                {% if form.email.errors %}
-                {{ form.email(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.email.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{ form.email(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
             <div class="form-group field">
@@ -98,5 +55,4 @@
         <small class="text-muted">Повернутися на <a href="{{ url_for('home') }}">головну</a></small>
     </div>
     </div>
-</body>
-</html>
+{% endblock %}

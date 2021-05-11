@@ -49,3 +49,24 @@ img.profile {
   height: auto;
 }
 
+.forms{
+     width: 350px;
+     margin: auto;
+     margin-top: 50px;
+     /*text-align: center;*/
+    }
+
+.field{
+     margin-bottom: 10px;
+      }
+
+.text_info{
+            text-align: center;
+}
+.submit_button{
+     text-align: center;
+     margin-top: 15px;
+ }
+ main.container{
+   width: 450px;
+ }
