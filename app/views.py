@@ -2,16 +2,34 @@
 
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from app import app, db, bcrypt
-from app.forms import ContactForm, RegistrationForm, LoginForm
-from app.models import User
-from flask_login import login_user, current_user, logout_user
+from app.forms import ContactForm, RegistrationForm, LoginForm, BookForm, UserBookForm
+from app.models import User, User_books, Books, Publishers, autor_has_books, Authors, Categories
+from flask_login import login_user, current_user, logout_user, login_required
+# import datetime
 import json
+
 
 
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html', title='LiBro')
+    books = []#якщо користувач не авторизований, щоб не вибивало помилку
+    if current_user.is_authenticated:
+        books = db.session.query(User, User_books, Books, Publishers, autor_has_books, Authors#об'єднюємо таблиці
+            ).filter(
+                User_books.user_id==current_user.id
+            ).filter(
+                User.id==current_user.id
+            ).filter(
+                Books.book_id==User_books.book_id
+            ).filter(
+                Publishers.publishers_id==Books.publisher_id
+            ).filter(
+                Books.book_id==autor_has_books.columns.book_id
+            ).filter(
+                Authors.author_id==autor_has_books.columns.book_id
+            ).all()
+    return render_template('home.html', title='LiBro', books=books)
 
 
 @app.route("/about")
@@ -64,6 +82,135 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+@app.route("/book/<int:user_book_id>")
+@login_required
+def book(user_book_id):
+    book = db.session.query(User, User_books, Books, Publishers, autor_has_books, Authors#об'єднюємо таблиці
+            ).filter(
+                User_books.user_book_id==user_book_id
+            ).filter(
+                User_books.user_id==current_user.id
+            ).filter(
+                User.id==current_user.id
+            ).filter(
+                Books.book_id==User_books.book_id
+            ).filter(
+                Publishers.publishers_id==Books.publisher_id
+            ).filter(
+                Books.book_id==autor_has_books.columns.book_id
+            ).filter(
+                Authors.author_id==autor_has_books.columns.book_id
+            ).first()
+    return render_template('book.html', book=book)
+
+@app.route("/book/add", methods=['GET', 'POST'])
+@login_required
+def add_book():
+    form = UserBookForm()
+    if form.validate_on_submit():
+        author_name = db.session.query(Authors).filter(Authors.first_name==form.name_author.data).all()#отримуємо всіх авторів з таким ім'ям
+        author_surname = db.session.query(Authors).filter(Authors.second_name==form.surname_author.data).all()#отримуємо всіх авторів з таким прізвищем
+        author = list(set(author_name).intersection(author_surname))#отримуємо автора з таким ім'ям і прізвищем
+
+        if author:
+            author_id = author[0].author_id
+        else:
+            # author_id = db.session.query(Authors).order_by(Authors.author_id.desc()).first().author_id + 1
+            # author = Authors(author_id=author_id, first_name=form.name_author.data, second_name=form.surname_author.data)
+            # db.session.add(author)
+            return redirect(url_for('new_book'))
+
+
+        book = db.session.query(Books, autor_has_books, Authors
+            ).filter(
+                Books.book_name==form.name_book.data
+            ).filter(
+                Books.book_id==autor_has_books.columns.book_id
+            ).filter(
+                author_id==autor_has_books.columns.book_id
+            ).first()
+
+        if book:#якщо така книга існує
+            book_id = book.Books.book_id
+        else:
+            return render_template('new_book.html', title='New Book', legend='New Book')
+
+        user_book_id = db.session.query(User_books).order_by(User_books.user_book_id.desc()).first().user_book_id + 1
+        user_book = User_books(user_book_id=user_book_id, price=form.price.data,
+            data_added=form.date_added.data, user_id=current_user.id, book_id=book_id)
+
+        db.session.add(user_book)
+        # db.session.add(user_book)
+
+        db.session.commit()
+        return redirect(url_for('home'))
+
+    return render_template('add_book.html', title='Add Book',
+                           form=form, legend='Add Book')
+
+
+@app.route("/book/new", methods=['GET', 'POST'])
+@login_required
+def new_book():
+    form = BookForm()
+    if form.validate_on_submit():
+
+        publisher = db.session.query(Publishers).filter(Publishers.publishes_name==form.publisher.data).first()
+        if publisher:#якщо таке видавництво є в базі даних
+            publisher_id = publisher.publishers_id
+        else:#якщо його немає
+            publisher_id = db.session.query(Publishers).order_by(Publishers.publishers_id.desc()).first().publishers_id + 1
+            publisher = Publishers(publishers_id=publisher_id, publishes_name=form.publisher.data)
+            db.session.add(publisher)
+            # db.session.commit()
+
+
+        category = db.session.query(Categories).filter(Categories.category_name==form.category.data).first()
+        if category:
+            category_id = category.category_id
+        else:
+            category_id = db.session.query(Categories).order_by(Categories.category_id.desc()).first().category_id + 1
+            category = Categories(category_id=category_id, category_name=form.category.data)
+            db.session.add(category)
+            # db.session.commit()
+        
+
+        author_name = db.session.query(Authors).filter(Authors.first_name==form.name_author.data).all()#отримуємо всіх авторів з таким ім'ям
+        author_surname = db.session.query(Authors).filter(Authors.second_name==form.surname_author.data).all()#отримуємо всіх авторів з таким прізвищем
+        author = list(set(author_name).intersection(author_surname))#отримуємо автора з таким ім'ям і прізвищем
+
+        if author:
+            author_id = author[0].author_id
+        else:
+            author_id = db.session.query(Authors).order_by(Authors.author_id.desc()).first().author_id + 1
+            author = Authors(author_id=author_id, first_name=form.name_author.data, second_name=form.surname_author.data)
+            db.session.add(author)
+            # db.session.commit()
+
+        # date_add = form.data_added.data.split('.')
+
+
+
+        book_id = db.session.query(Books).order_by(Books.book_id.desc()).first().book_id + 1
+        book = Books(book_id=book_id, book_name=form.name_book.data, description=form.description.data, page=form.page.data,
+         year=form.year.data, publisher_id=publisher_id, categories_id=category_id)
+
+
+
+
+
+        db.session.add(book)
+        # db.session.add(user_book)
+
+        db.session.commit()
+
+        ins = autor_has_books.insert().values(book_id=book_id, author_id=author_id)
+        db.engine.execute(ins)
+        # flash('Your post has been created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('new_book.html', title='New Book',
+                           form=form, legend='New Book')
 
 
 # @app.route("/contact", methods=['POST', 'GET'])

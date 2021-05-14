@@ -27,11 +27,6 @@ class Publishers(db.Model):
 	publishes_name = db.Column(db.String(50), nullable=False)
 	books = db.relationship('Books', backref='publisher', lazy=True)
 
-# CREATE TABLE categories (
-# category_id Integer  PRIMARY KEY,
-# category_name VARCHAR ( 50 ) NOT NULL,
-# categors_id INTEGER references categories(category_id)
-# );
 
 class Categories(db.Model):
 	category_id = db.Column(db.Integer, primary_key=True)
@@ -40,15 +35,7 @@ class Categories(db.Model):
 	# categors_id = db.Column(db.Integer, db.ForeignKey('Categories.category_id'))
 	books = db.relationship('Books', backref='category', lazy=True)
 
-# CREATE TABLE books (
-# books_id Integer  PRIMARY KEY,
-# book_name VARCHAR ( 50 ) NOT NULL,
-# description TEXT,
-# page INTEGER,
-# year INTEGER,
-# publisher_id INTEGER references publishers(publisher_id ),
-# categories_id INTEGER references categories(category_id )
-# );
+
 
 class Books(db.Model):
 	book_id = db.Column(db.Integer, primary_key=True)
@@ -61,17 +48,7 @@ class Books(db.Model):
 
 	user_books = db.relationship('User_books', backref='book', lazy=True)
 
-# CREATE TABLE user_books (
-# user_books_id Integer  PRIMARY KEY,
-# price INTEGER ( 10 ) ,
-# data_added DATE,
-# data_readed DATE,
-# rating SMALLINT,
-# rewiew TEXT,
-# status_id INTEGER references shelves(shelves_id ),
-# user_id INTEGER references users(user_id ),
-# book_id INTEGER references books(books_id )fr
-# );
+
 
 class User_books(db.Model):
 	user_book_id = db.Column(db.Integer, primary_key=True)
@@ -85,11 +62,6 @@ class User_books(db.Model):
 	book_id = db.Column(db.Integer, db.ForeignKey('books.book_id'))
 
 
-# CREATE TABLE authors (
-# author_id Integer  PRIMARY KEY,
-# first_name VARCHAR ( 25 ) NOT NULL,
-# second_name VARCHAR ( 25 ) NOT NULL
-# );
 
 class Authors(db.Model):
 	author_id = db.Column(db.Integer, primary_key=True)
@@ -98,8 +70,3 @@ class Authors(db.Model):
 
 	book = db.relationship('Books', secondary=autor_has_books, backref=db.backref('autor'), lazy='dynamic')
 
-# CREATE TABLE autor_has_books (
-# id Integer  PRIMARY KEY,
-# book_id INTEGER references books(books_id ),
-# author_id INTEGER references authors(author_id )
-# );

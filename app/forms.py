@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField, PasswordField
+from wtforms import StringField, TextAreaField, SubmitField, PasswordField, IntegerField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from app.models import User
 
@@ -45,3 +45,35 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField("Вхід")
 
+
+class UserBookForm(FlaskForm):
+    name_book = StringField('Назва книги', validators=[DataRequired(message="Введіть назву книги!")])
+
+    name_author = StringField('Ім\'я автора', validators=[DataRequired(message="Введіть автора книги!")])
+
+    surname_author = StringField('Прізвище автора', validators=[DataRequired(message="Введіть автора книги!")])
+
+    price = IntegerField('Ціна', validators=[DataRequired(message="Введіть ціну книги!")])
+
+    date_added = DateField('Дата покупки(YYYY-MM-DD)', validators=[DataRequired(message="Введіть дату покупки!")])
+
+    submit = SubmitField("Додати")
+
+class BookForm(FlaskForm):
+    name_book = StringField('Назва книги', validators=[DataRequired(message="Введіть назву книги!")])
+
+    name_author = StringField('Ім\'я автора', validators=[DataRequired(message="Введіть автора книги!")])
+
+    surname_author = StringField('Прізвище автора', validators=[DataRequired(message="Введіть автора книги!")])
+
+    description = TextAreaField('Опис', validators=[DataRequired(message="Введіть опис книги!")])
+
+    page = IntegerField('Кількість сторінок', validators=[DataRequired(message="Введіть кількість сторінок!")])
+
+    year = IntegerField('Рік')
+
+    publisher = StringField('Видавництво', validators=[DataRequired(message="Введіть назву видавництва!")])
+
+    category = StringField('Категорія', validators=[DataRequired(message="Введіть категорію книги!")])
+
+    submit = SubmitField("Додати")

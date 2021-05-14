@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block content %}
+	<form method="POST" action="" >
+		{{ form.hidden_tag() }}
+	        <legend class="border-bottom mb-4">Додати книгу</legend>
+	        <div class="form-group field">
+	            {{ form.name_book.label(class="form-control-label") }}
+	            {% if form.name_book.errors %}
+	            {{ form.name_book(class="form-control form-control-lg is-invalid") }}
+	            <div class="invalid-feedback">
+	                {% for error in form.name_book.errors %}
+	                <span>{{ error }}</span>
+	                {% endfor %}
+	            </div>
+	            {% else %}
+	            {{ form.name_book(class="form-control form-control-lg") }}
+	            {% endif %}
+	            </div>
+	        <div class="form-group field">
+	            {{ form.name_author.label(class="form-control-label") }}
+	            {% if form.name_author.errors %}
+	                {{ form.name_author(class="form-control form-control-lg is-invalid") }}
+	                <div class="invalid-feedback">
+	                    {% for error in form.name_author.errors %}
+	                        <span>{{ error }}</span>
+	                    {% endfor %}
+	                </div>
+	            {% else %}
+	                {{ form.name_author(class="form-control form-control-lg") }}
+	            {% endif %}
+	        </div>
+	        <div class="form-group field">
+	            {{ form.surname_author.label(class="form-control-label") }}
+	            {% if form.surname_author.errors %}
+	                {{ form.surname_author(class="form-control form-control-lg is-invalid") }}
+	                <div class="invalid-feedback">
+	                    {% for error in form.surname_author.errors %}
+	                        <span>{{ error }}</span>
+	                    {% endfor %}
+	                </div>
+	            {% else %}
+	                {{ form.surname_author(class="form-control form-control-lg") }}
+	            {% endif %}
+	        </div>
+	        <div class="form-group field">
+	            {{ form.price.label(class="form-control-label") }}
+	            {% if form.price.errors %}
+	                {{ form.price(class="form-control form-control-lg is-invalid") }}
+	                <div class="invalid-feedback">
+	                    {% for error in form.price.errors %}
+	                        <span>{{ error }}</span>
+	                    {% endfor %}
+	                </div>
+	            {% else %}
+	                {{ form.price(class="form-control form-control-lg") }}
+	            {% endif %}
+	        </div>
+	        <div class="form-group field">
+	            {{ form.date_added.label(class="form-control-label") }}
+	            {% if form.date_added.errors %}
+	                {{ form.date_added(class="form-control form-control-lg is-invalid") }}
+	                <div class="invalid-feedback">
+	                    {% for error in form.date_added.errors %}
+	                        <span>{{ error }}</span>
+	                    {% endfor %}
+	                </div>
+	            {% else %}
+	                {{ form.date_added(class="form-control form-control-lg") }}
+	            {% endif %}
+	        </div>
+	    </fieldset>
+	    <div class="form-group submit_button">
+	        {{ form.submit(class="btn btn-outline-info") }}
+	    </div>
+	</form>
+	<div class="text_info">
+	    <small class="text-muted">Повернутися на <a href="{{ url_for('home') }}">головну</a></small>
+	</div>
+{% endblock content %}
