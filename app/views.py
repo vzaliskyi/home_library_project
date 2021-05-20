@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from app import app, db, bcrypt
-from app.forms import ContactForm, RegistrationForm, LoginForm, BookForm, UserBookForm
+from app.forms import ContactForm, RegistrationForm, LoginForm, BookForm, UserBookForm, UpdateForm
 from app.models import User, User_books, Books, Publishers, autor_has_books, Authors, Categories
 from flask_login import login_user, current_user, logout_user, login_required
 # import datetime
@@ -211,6 +211,26 @@ def new_book():
         return redirect(url_for('home'))
     return render_template('new_book.html', title='New Book',
                            form=form, legend='New Book')
+
+@app.route("/book/<int:user_book_id>/update", methods=['GET', 'POST'])
+@login_required
+def update_book(user_book_id):
+    form = UpdateForm()
+    if form.validate_on_submit():
+        book = User_books.query.filter_by(user_book_id=user_book_id).first()
+        book.data_readed = form.data_readed.data
+        if form.rating.data:
+            book.rating = form.rating.data
+
+        if form.rewiew.data:
+            book.rewiew = form.rewiew.data
+
+
+        db.session.commit()
+
+        return redirect(url_for('book', user_book_id=book.user_book_id))
+
+    return render_template('update_book.html', form=form, user_book_id=user_book_id) 
 
 
 # @app.route("/contact", methods=['POST', 'GET'])

@@ -11,6 +11,16 @@
 		        <div>Ціна: {{ book.User_books.price }} грн</div>
 		        <div>Видавництво: {{ book.Publishers.publishes_name }}</div>
 		        <div>Дата додавання: {{ book.User_books.data_added.strftime('%Y-%m-%d') }}</div>
+		        {% if book.User_books.data_readed %}
+		        	<div>Дата прочитання: {{ book.User_books.data_readed.strftime('%Y-%m-%d') }}</div>
+		        {% endif %}
+		        {% if book.User_books.rating %}
+		        	<div>Оцінка: {{ book.User_books.rating }}</div>
+		        {% endif %}
+		        {% if book.User_books.rewiew %}
+		        	<div>Рецензія: {{ book.User_books.rewiew }}</div>
+		        {% endif %}
+		        <a href="{{ url_for('update_book', user_book_id=book.User_books.user_book_id ) }}">Оновити дані</a>
 		    </div>
 
 	        

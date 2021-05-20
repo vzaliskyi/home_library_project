@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+	<form method="POST" action="" >
+		{{ form.hidden_tag() }}
+	        <legend class="border-bottom mb-4">Додати книгу</legend>
+	        <div class="form-group field">
+	            {{ form.data_readed.label(class="form-control-label") }}
+	            {% if form.data_readed.errors %}
+	            {{ form.data_readed(class="form-control form-control-lg is-invalid") }}
+	            <div class="invalid-feedback">
+	                {% for error in form.data_readed.errors %}
+	                <span>{{ error }}</span>
+	                {% endfor %}
+	            </div>
+	            {% else %}
+	            {{ form.data_readed(class="form-control form-control-lg") }}
+	            {% endif %}
+	            </div>
+	        <div class="form-group field">
+	            {{ form.rating.label(class="form-control-label") }}
+	            {% if form.rating.errors %}
+	                {{ form.rating(class="form-control form-control-lg is-invalid") }}
+	                <div class="invalid-feedback">
+	                    {% for error in form.rating.errors %}
+	                        <span>{{ error }}</span>
+	                    {% endfor %}
+	                </div>
+	            {% else %}
+	                {{ form.rating(class="form-control form-control-lg") }}
+	            {% endif %}
+	        </div>
+	        <div class="form-group field">
+	            {{ form.rewiew.label(class="form-control-label") }}
+	            {% if form.rewiew.errors %}
+	                {{ form.rewiew(class="form-control form-control-lg is-invalid") }}
+	                <div class="invalid-feedback">
+	                    {% for error in form.rewiew.errors %}
+	                        <span>{{ error }}</span>
+	                    {% endfor %}
+	                </div>
+	            {% else %}
+	                {{ form.rewiew(class="form-control form-control-lg") }}
+	            {% endif %}
+	        </div>
+	    </fieldset>
+	    <div class="form-group submit_button">
+	        {{ form.submit(class="btn btn-outline-info") }}
+	    </div>
+	</form>
+	<div class="text_info">
+	    <small class="text-muted">Повернутися до <a href="{{ url_for('book', user_book_id=user_book_id) }}">книги</a></small>
+	</div>
+{% endblock content %}

@@ -77,3 +77,13 @@ class BookForm(FlaskForm):
     category = StringField('Категорія', validators=[DataRequired(message="Введіть категорію книги!")])
 
     submit = SubmitField("Додати")
+
+class UpdateForm(FlaskForm):
+    data_readed = DateField('Дата прочитання(YYYY-MM-DD)', validators=[DataRequired(message="Введіть дату покупки!")])
+
+    rating = IntegerField('Оцінка')
+
+    rewiew = TextAreaField('Рецензія на книгу')
+
+    submit = SubmitField("Додати")
+
